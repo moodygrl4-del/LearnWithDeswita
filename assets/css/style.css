@@ -1,0 +1,264 @@
+/* Gaya tombol dashboard modis */
+.modern-button {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    margin: 10px 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background-color: #2196F3;  /* Warna biru */
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.modern-button:hover {
+    background-color: #1976D2;  /* Warna biru lebih gelap saat hover */
+    transform: scale(1.03);
+}
+
+/* Gaya header dashboard */
+.dashboard-header {
+    text-align: center;
+    color: #2e4057;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+/* Gaya header umum */
+.header-style {
+    font-size: 2em;
+    font-weight: bold;
+    color: #2e4057;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Gaya subheader */
+.subheader-style {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #34495e;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Gaya tombol logout dan kembali */
+.logout-button, .back-button {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+.logout-button:hover, .back-button:hover {
+    background-color: #e67e22;
+}
+
+/* Gaya sidebar */
+.sidebar-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2e4057;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Gaya untuk daftar file */
+.file-list-item {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid #2196F3;
+}
+
+/* Gaya deskripsi/caption yang cantik */
+.beautiful-caption {
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 1.1em;
+    color: #2c3e50;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.beautiful-caption-title {
+    font-weight: bold;
+    color: #3498db;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+}
+
+.beautiful-caption-content {
+    color: #34495e;
+    line-height: 1.6;
+}
+
+/* Gaya card untuk item daftar */
+.item-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    border-left: 5px solid #3498db;
+    transition: all 0.3s ease;
+}
+
+.item-card:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.item-card-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.item-card-description {
+    color: #34495e;
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Gaya untuk file list item */
+.file-list-item-modern {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border-left: 4px solid #3498db;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.file-list-item-modern:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.file-list-item-modern-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.file-list-item-modern-desc {
+    color: #34495e;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+/* Gaya video apersepsi container */
+.video-apresiasi-container {
+    background-color: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin: 25px 0;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    border-left: 5px solid #3498db;
+    text-align: center;
+}
+
+.video-apresiasi-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.video-apresiasi-player {
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 20px 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Gaya deskripsi pembelajaran */
+.learning-description {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 4px solid #2ecc71;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.learning-description h3 {
+    color: #27ae60;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+}
+
+.learning-description p {
+    color: #34495e;
+    font-size: 1.1em;
+    line-height: 1.7;
+    margin: 10px 0;
+}
+
+.learning-description ul {
+    color: #34495e;
+    font-size: 1.1em;
+    line-height: 1.7;
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+/* Gaya banner LMS */
+.lms-banner {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+/* Gaya tombol upload banner */
+.banner-upload-btn {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin: 15px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    font-size: 1.1em;
+}
+
+.banner-upload-btn:hover {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Gaya form upload banner */
+.banner-upload-form {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 4px solid #9b59b6;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
