@@ -105,39 +105,45 @@ def show():
                 result = cursor.fetchone()
                 desc = result[0] if result else "Tidak ada deskripsi"
 
-                col1, col2 = st.columns([4, 1])
+                # Tampilkan card modern
+                st.markdown(f'''
+                    <div class="file-list-item-modern">
+                        <div class="file-list-item-modern-title">📄 {f}</div>
+                        <div class="file-list-item-modern-desc">📝 Deskripsi: {desc}</div>
+                    </div>
+                ''', unsafe_allow_html=True)
+
+                # Preview file jika format didukung
+                file_path = f"data/materials/{f}"
+                file_ext = f.split('.')[-1].lower()
+
+                if file_ext in ['jpg', 'jpeg', 'png']:
+                    st.image(file_path, caption=f"Preview {f}", use_column_width=True)
+                elif file_ext == 'pdf':
+                    # Untuk PDF, tampilkan link download karena streamlit tidak bisa embed PDF
+                    st.markdown(f"[📄 Lihat PDF]({file_path})")
+                elif file_ext in ['mp4', 'mov', 'avi']:
+                    st.video(file_path)
+                elif file_ext in ['mp3', 'wav']:
+                    st.audio(file_path)
+
+                # Tombol download dan hapus
+                col1, col2 = st.columns(2)
                 with col1:
-                    st.write(f"📄 [{f}](data/materials/{f})")
-                    st.caption(f"📝 Deskripsi: {desc}")
-
-                    # Preview file jika format didukung
-                    file_path = f"data/materials/{f}"
-                    file_ext = f.split('.')[-1].lower()
-
-                    if file_ext in ['jpg', 'jpeg', 'png']:
-                        st.image(file_path, caption=f"Preview {f}", use_column_width=True)
-                    elif file_ext == 'pdf':
-                        # Untuk PDF, tampilkan link download karena streamlit tidak bisa embed PDF
-                        st.markdown(f"[📄 Lihat PDF]({file_path})")
-                    elif file_ext in ['mp4', 'mov', 'avi']:
-                        st.video(file_path)
-                    elif file_ext in ['mp3', 'wav']:
-                        st.audio(file_path)
-
+                    # Tombol download
+                    with open(file_path, "rb") as file:
+                        btn = st.download_button(
+                            label="⬇️ Download",
+                            data=file,
+                            file_name=f,
+                            mime="application/octet-stream",
+                            key=f"download_{f}",
+                            use_container_width=True
+                        )
                 if role in ["guru", "admin"]:
                     with col2:
-                        # Tombol download
-                        with open(file_path, "rb") as file:
-                            btn = st.download_button(
-                                label="⬇️",
-                                data=file,
-                                file_name=f,
-                                mime="application/octet-stream",
-                                key=f"download_{f}",
-                                use_container_width=True
-                            )
                         # Tombol hapus
-                        if st.button("🗑️", key=f"delete_{f}", use_container_width=True):
+                        if st.button("🗑️ Hapus", key=f"delete_{f}", use_container_width=True):
                             # Hapus file
                             os.remove(f"data/materials/{f}")
                             # Hapus dari database
@@ -149,6 +155,62 @@ def show():
             conn.close()
         else:
             st.info("Belum ada materi yang diupload.")
+
+    # Tampilan untuk siswa (hanya download dan sudah baca)
+    else:  # role == "siswa"
+        st.subheader("Daftar Materi")
+        files = os.listdir("data/materials/") if os.path.exists("data/materials/") else []
+        if files:
+            conn = sqlite3.connect("data/lms.db")
+            cursor = conn.cursor()
+            for f in files:
+                # Ambil deskripsi dari database
+                cursor.execute("SELECT description FROM schedule WHERE title = ? AND type = 'material'", (f,))
+                result = cursor.fetchone()
+                desc = result[0] if result else "Tidak ada deskripsi"
+
+                # Tampilkan card modern
+                st.markdown(f'''
+                    <div class="file-list-item-modern">
+                        <div class="file-list-item-modern-title">📄 {f}</div>
+                        <div class="file-list-item-modern-desc">📝 Deskripsi: {desc}</div>
+                    </div>
+                ''', unsafe_allow_html=True)
+
+                # Preview file jika format didukung
+                file_path = f"data/materials/{f}"
+                file_ext = f.split('.')[-1].lower()
+
+                if file_ext in ['jpg', 'jpeg', 'png']:
+                    st.image(file_path, caption=f"Preview {f}", use_column_width=True)
+                elif file_ext == 'pdf':
+                    # Untuk PDF, tampilkan link download karena streamlit tidak bisa embed PDF
+                    st.markdown(f"[📄 Lihat PDF]({file_path})")
+                elif file_ext in ['mp4', 'mov', 'avi']:
+                    st.video(file_path)
+                elif file_ext in ['mp3', 'wav']:
+                    st.audio(file_path)
+
+                # Tombol download untuk siswa
+                with open(file_path, "rb") as file:
+                    btn = st.download_button(
+                        label="⬇️ Download Materi",
+                        data=file,
+                        file_name=f,
+                        mime="application/octet-stream",
+                        key=f"download_student_{f}",
+                        use_container_width=True
+                    )
+            conn.close()
+        else:
+            st.info("Belum ada materi yang diupload.")
+
+        # Tombol sudah baca (untuk siswa)
+        if st.button("✅ Sudah Baca Materi", use_container_width=True):
+            # Set bahwa materi sudah dibaca
+            st.session_state[f"material_read_{current_user}"] = True
+            # Arahkan ke posttest
+            st.rerun()
 
     # Tombol kembali dan logout
     col1, col2 = st.columns(2)
@@ -295,47 +357,59 @@ def show_pretest(user):
 
 def show_material(user):
     st.subheader("📚 Materi")
-    # Tampilkan link/embed materi
-    conn = sqlite3.connect("data/lms.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT title, description, link_or_embed FROM materials ORDER BY date DESC LIMIT 1")
-    material = cursor.fetchone()
-    conn.close()
-    
-    if material:
-        title, desc, link_or_embed = material
-        st.write(f"**{title}**")
-        st.caption(f"📝 Deskripsi: {desc}")
-        
-        # Tampilkan link/embed
-        if link_or_embed and link_or_embed != "Tidak ada link/embed":
-            # Cek apakah link Google Drive
-            if "drive.google.com/file/d/" in link_or_embed:
-                # Ubah link Google Drive menjadi link embed
-                try:
-                    file_id = link_or_embed.split("/d/")[1].split("/")[0]
-                    embed_url = f"https://drive.google.com/file/d/{file_id}/preview"
-                    st.components.v1.iframe(embed_url, height=600)
-                except:
-                    st.error("❌ Link Google Drive tidak valid.")
-            elif link_or_embed.startswith('<iframe'):
-                # Tampilkan embed code
-                st.components.v1.html(link_or_embed, height=600)
-            elif link_or_embed.startswith('http'):
-                # Tampilkan link
-                st.markdown(f"[🔗 Buka Materi]({link_or_embed})")
-            else:
-                st.info("Konten tidak dikenali.")
-        else:
-            st.info("Belum ada link/embed materi.")
-        
-        # Tombol sudah baca
-        if st.button("✅ Sudah Baca", use_container_width=True):
-            st.session_state.current_page = "materials"
-            st.session_state.material_read = True
-            st.rerun()
+    # Tampilkan daftar materi yang diupload guru
+    files = os.listdir("data/materials/") if os.path.exists("data/materials/") else []
+    if files:
+        conn = sqlite3.connect("data/lms.db")
+        cursor = conn.cursor()
+        for f in files:
+            # Ambil deskripsi dari database
+            cursor.execute("SELECT description FROM schedule WHERE title = ? AND type = 'material'", (f,))
+            result = cursor.fetchone()
+            desc = result[0] if result else "Tidak ada deskripsi"
+
+            # Tampilkan card modern
+            st.markdown(f'''
+                <div class="file-list-item-modern">
+                    <div class="file-list-item-modern-title">📄 {f}</div>
+                    <div class="file-list-item-modern-desc">📝 Deskripsi: {desc}</div>
+                </div>
+            ''', unsafe_allow_html=True)
+
+            # Preview file jika format didukung
+            file_path = f"data/materials/{f}"
+            file_ext = f.split('.')[-1].lower()
+
+            if file_ext in ['jpg', 'jpeg', 'png']:
+                st.image(file_path, caption=f"Preview {f}", use_column_width=True)
+            elif file_ext == 'pdf':
+                # Untuk PDF, tampilkan link download karena streamlit tidak bisa embed PDF
+                st.markdown(f"[📄 Lihat PDF]({file_path})")
+            elif file_ext in ['mp4', 'mov', 'avi']:
+                st.video(file_path)
+            elif file_ext in ['mp3', 'wav']:
+                st.audio(file_path)
+
+            # Tombol download untuk siswa
+            with open(file_path, "rb") as file:
+                btn = st.download_button(
+                    label="⬇️ Download Materi",
+                    data=file,
+                    file_name=f,
+                    mime="application/octet-stream",
+                    key=f"download_student_material_{f}",
+                    use_container_width=True
+                )
+        conn.close()
     else:
         st.info("Belum ada materi yang diupload.")
+
+    # Tombol sudah baca (untuk siswa)
+    if st.button("✅ Sudah Baca Materi", use_container_width=True):
+        # Set bahwa materi sudah dibaca
+        st.session_state[f"material_read_{user}"] = True
+        # Arahkan ke posttest
+        st.rerun()
 
 def show_posttest(user):
     st.subheader("📝 Posttest")
@@ -466,5 +540,4 @@ def show_material_results(user):
             st.info("🔄 Tidak ada perubahan skor.")
     else:
         st.info("Belum ada hasil pembelajaran.")
-
 
