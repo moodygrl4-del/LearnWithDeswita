@@ -157,7 +157,7 @@ def show():
             st.info("Belum ada materi yang diupload.")
 
     # Tampilan untuk siswa (hanya download dan sudah baca)
-    else:  # role == "siswa"
+    if role == "siswa":
         st.subheader("Daftar Materi")
         files = os.listdir("data/materials/") if os.path.exists("data/materials/") else []
         if files:
