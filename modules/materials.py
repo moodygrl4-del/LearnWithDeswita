@@ -145,4 +145,3 @@ def show():
             if 'current_page' in st.session_state:
                 del st.session_state['current_page']
             st.rerun()
- 
