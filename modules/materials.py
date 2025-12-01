@@ -130,6 +130,43 @@ def show():
     else:
         st.info("Belum ada materi yang diupload.")
 
+    # Tampilkan materi eksternal (YouTube, dll)
+    st.subheader("Materi Eksternal")
+    conn = sqlite3.connect("data/lms.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT title, description, link_or_embed FROM materials WHERE link_or_embed != 'Tidak ada link/embed' ORDER BY date DESC")
+    external_materials = cursor.fetchall()
+    conn.close()
+
+    if external_materials:
+        for title, desc, link_or_embed in external_materials:
+            st.write(f"**{title}**")
+            st.caption(f"📝 Deskripsi: {desc}")
+
+            # Cek apakah link adalah YouTube
+            if "youtube.com/watch" in link_or_embed or "youtu.be/" in link_or_embed:
+                # Ekstrak ID video YouTube
+                if "youtube.com/watch" in link_or_embed:
+                    video_id = link_or_embed.split("v=")[1].split("&")[0]
+                elif "youtu.be/" in link_or_embed:
+                    video_id = link_or_embed.split("/")[-1].split("?")[0]
+                else:
+                    video_id = None
+
+                if video_id:
+                    # Embed video YouTube langsung di Streamlit
+                    st.video(f"https://www.youtube.com/watch?v={video_id}")
+                else:
+                    st.error("❌ Link YouTube tidak valid.")
+            elif link_or_embed.startswith('<iframe'):
+                # Jika embed code, tampilkan dengan iframe
+                st.components.v1.html(link_or_embed, height=400)
+            else:
+                # Jika link biasa, tampilkan sebagai link
+                st.markdown(f"[🔗 Buka Link]({link_or_embed})")
+    else:
+        st.info("Belum ada materi eksternal yang diupload.")
+
     # Tombol kembali dan logout
     col1, col2 = st.columns(2)
     with col1:
