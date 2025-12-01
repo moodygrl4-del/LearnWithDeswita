@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime
 
 def show():
-    st.markdown('<div class="header-style">💬 Chat Kelas</div>', unsafe_allow_html=True)
+    st.markdown('<div class="header-style">💬 Chat Grup</div>', unsafe_allow_html=True)
     current_user = st.session_state.name
     current_role = st.session_state.role
 
@@ -24,7 +24,7 @@ def show():
 
     if class_result:
         class_name = class_result[0]
-        st.info(f"Obrolan untuk kelas: **{class_name}**")
+        st.info(f"Obrolan grup untuk kelas: **{class_name}**")
     else:
         st.error("❌ Kelas tidak ditemukan.")
         del st.session_state['active_class']
@@ -34,18 +34,18 @@ def show():
     # Ambil semua pesan grup dari database
     conn = sqlite3.connect("data/lms.db")
     cursor = conn.cursor()
-    # Ambil pesan dengan receiver = "Kelas" (pesan grup)
+    # Ambil pesan dengan receiver = "Grup" (pesan grup)
     cursor.execute("""
         SELECT sender, message, timestamp, id
         FROM chat
-        WHERE receiver = 'Kelas'
+        WHERE receiver = 'Grup'
         ORDER BY timestamp ASC
     """)
     messages = cursor.fetchall()
     conn.close()
 
     # Tampilkan pesan grup
-    st.subheader("Obrolan Grup")
+    st.subheader("Obrolan Grup Kelas")
     if messages:
         for sender, msg, time, msg_id in messages:
             if sender == current_user:
@@ -86,7 +86,7 @@ def show():
             cursor.execute("""
                 INSERT INTO chat (sender, receiver, message, timestamp)
                 VALUES (?, ?, ?, ?)
-            """, (current_user, "Kelas", new_message, timestamp))
+            """, (current_user, "Grup", new_message, timestamp))
             conn.commit()
             conn.close()
             st.rerun()
