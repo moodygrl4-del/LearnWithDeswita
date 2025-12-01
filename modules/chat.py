@@ -31,22 +31,21 @@ def show():
         st.rerun()
         return
 
-    # Ambil pesan dari semua pengguna di kelas
+    # Ambil semua pesan grup dari database
     conn = sqlite3.connect("data/lms.db")
     cursor = conn.cursor()
-    # Ambil pesan dari semua user di kelas ini
+    # Ambil pesan dengan receiver = "Kelas" (pesan grup)
     cursor.execute("""
-        SELECT c.sender, c.message, c.timestamp, c.id
-        FROM chat c
-        JOIN class_members cm ON c.sender = cm.student_name
-        WHERE cm.class_id = ?
-        ORDER BY c.timestamp ASC
-    """, (st.session_state.active_class,))
+        SELECT sender, message, timestamp, id
+        FROM chat
+        WHERE receiver = 'Kelas'
+        ORDER BY timestamp ASC
+    """)
     messages = cursor.fetchall()
     conn.close()
 
-    # Tampilkan pesan dengan st.chat_message
-    st.subheader("Obrolan Kelas")
+    # Tampilkan pesan grup
+    st.subheader("Obrolan Grup")
     if messages:
         for sender, msg, time, msg_id in messages:
             if sender == current_user:
@@ -70,7 +69,7 @@ def show():
                     st.write(f"**{sender}**: {msg}")
                     st.caption(time)
     else:
-        st.info("Belum ada pesan di kelas ini.")
+        st.info("Belum ada pesan di obrolan grup.")
 
     # Input pesan di bawah
     with st.form("send_message_form", clear_on_submit=True):
